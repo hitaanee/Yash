@@ -1,0 +1,220 @@
+<!doctype html>
+<html  lang="de">
+
+    <head>
+
+      <meta charset="UTF-8">
+        <style>
+      body {
+        font-family: 'Segeo UI', Arial, sans-serif;
+        background: #f8f8fa;
+        margin: 0;
+        padding: 0;
+        color: #2a2a2a;
+      }
+
+      .header {
+      color: #fff;
+      background: linear-gradient(90deg, #444  60%, #222 100%);
+      width: 100%;
+     padding: 32px  0  24px 0;
+     text-align: center;
+     font-size: 2.3em;
+     letter-spacing: 2px;
+     box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+   }
+
+   .container   {
+    max-width: 500px;
+    margin: 0 auto 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 32px 24px 24px 24px;
+   }
+
+   h2 {
+   font-size: 1.3em;
+   margin-top: 0;
+   margin-bottom: 24px;
+   color: #222;
+   font-weight: 500;
+   text-align: left;
+   }
+
+   .form-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+   }
+
+   input[type="text"], select {
+    padding: 10px;
+    border: 1px solid #c5c7cf;
+    border-radius: 6px;
+    background: #f8f8fa;
+    font-size: 1em;
+    flex: 1 1 140px;
+    min-width: 120px;
+    transition: border-color .2s;
+   }
+   input[type="text"]:focus, select:focus {
+    border-color: #3e7aff; 
+    outline: none;
+   }
+   button {
+    background: #3e7aff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba (62,122,255,0.06);
+    transition: background .2s;
+   }
+   button:hover, button:focus {
+    background: #265cbe;
+   }
+   #ordnerListe, #arbeitsBlaetterListe {
+    margin: 14px 0 0 0;
+   }
+
+   .ordner-item {
+    background: #e7edfa;
+    color: #265cbe;
+    border-radius: 5px;
+    padding: 6px 13px;
+    margin-bottom: 7px;
+    font-weight: 500;
+    display: inline-block;
+   }
+
+   .arbeitsblatt-card {
+    color: #f4f7ff;
+   border-radius: 7px;
+   padding: 12px 15px 9px 15px;
+   margin-bottom: 11px;
+   box-shadow: 0 1px 6px rgba(62,122,255,0.08);
+   }
+
+   .arbeitsblatt-card b {
+    color: #3e7aff;
+    font-size: 1.07em;
+   }
+   .arbeitsblatt-titel {
+    font-weight: 600;
+    margin-bottom: 5px;
+   }
+   .arbeitsblatt-ordner {
+    color: #3e7aff;
+    font-size: .95em;
+    margin-bottom: 2px;
+   }
+   .arbeitsblatt-card h3 {
+    margin: 0 0 6px 0;
+    font-size: 1.09em;
+    color: #265cbe;
+    font-weight: 500;
+   }
+   .arbeitsblatt-leer {
+    color: #bbb;
+    font-style: italic;
+    margin-bottom: 8px;
+   }
+     
+   @media (max-width: 600px) {
+    .container {padding: 20px 8px;}
+    .header {font-size: 1.4em; padding: 21px 0;}
+   }
+    </style>
+
+    <title>YASP</title>
+
+    </head>
+
+    <body>
+
+      <h1 class="header">YASP</h1>
+
+     <div class="container">
+      <h2> ordner anlegen </h2>
+      <div class="form-group">
+       <input id="ordnerName" type="text" placeholder="OrdnerName">
+       <button onclick="addOrdner()"> Neuer Ordner </button>
+       </div>
+       <div id="ordnerListe"> </div>
+       </div>
+        
+       <div class="container">
+       <h2>Arbeitsblatt erstellen</h2>
+       <div class="form-group">
+       <input id="blattTitel" type="text" placeholder="Titel  des arbeitsblatts">
+       <input id="blattBeschreibung" type="text" placeholder="blattBeschreibung">
+       </div>
+       <div class="form-group">
+       <select id="ordnerSelect"> </select>
+       <button onclick="addArbeitsblatt()">Arbeitsbaltt Hinzufügen</button>
+       </div>
+       <div id="arbeitsBlaetterListe"></div>
+      </div>
+
+        <script>
+          let ordner = [];
+
+          function addOrdner() {
+            const name  =  document.getElementById('ordnerName').value.trim();
+          if (name && !ordner.includes(name)) {
+            ordner.push(name);
+               showOrdner();
+               showOrdnerSelect();
+               showArbeitsblaetter();
+            document.getElementById('ordnerName').value = '';
+            }
+          }
+
+          function showOrdner() {
+            const div = document.getElementById('ordnerListe');
+            div.innerHTML = ordner.map(name => `<div>${name}</div>`).join('');
+          }
+
+         let arbeitsblaetter  =  [];
+
+         function showOrdnerSelect() {
+          const sel  = document.getElementById('ordnerSelect');
+          sel.innerHTML = ordner.map(name => `<option value="${name}">${name}</option>`).join('');
+         }
+
+         function addArbeitsblatt() {
+          const titel = document.getElementById('blattTitel').value.trim();
+          const beschreibung = document.getElementById('blattBeschreibung').value.trim();
+          const ordnerName = document.getElementById('ordnerSelect').value;
+          if (titel && ordnerName) {
+            arbeitsblaetter.push({ titel, beschreibung, ordner: ordnerName });
+            showArbeitsblaetter();
+            document.getElementById('blattTitel').value = '';
+            document.getElementById('blattBeschreibung').value = '';
+
+          }
+         }
+
+         function showArbeitsblaetter(){
+          const div = document.getElementById('arbeitsBlaetterListe');
+
+          div.innerHTML = ordner.map(name => {
+            const BlattList = arbeitsblaetter
+            .filter(b => b.ordner ===  name)
+            .map(b => `<div><b>${b.titel}</b>: ${b.beschreibung}</div>`).join('');
+            return `<div><h3>${name}</h3>${BlattList || '<i>keine Arbeitsblätter</i>'}</div>`;
+          }).join('');
+         }
+
+         showOrdnerSelect();
+         showArbeitsblaetter();
+
+        </script>
+
+    </body>
+
+</html>
